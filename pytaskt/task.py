@@ -100,11 +100,9 @@ def _run_task_funcs(task_graph: networkx.DiGraph, max_threads: int) -> None:
             futures_task_names.update(new_future_tasks)
             (completed_future, _) = wait(futures_task_names, return_when=FIRST_COMPLETED)
             completed_task_name: str = futures_task_names.pop(completed_future.pop())
-            print("Completed %s" % completed_task_name)
             for _, successor in task_graph.edges(completed_task_name):
                 indegree_map[successor] -= 1
                 if indegree_map[successor] is 0:
-                    print("Indegree of %s is 0" % successor)
                     LOGGER.debug("Task %s is now available for execution", successor)
                     task_queue.append(successor)
                     del indegree_map[successor]
